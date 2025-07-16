@@ -131,6 +131,25 @@ app.get('/casas', async (req, res) => {
   }
 })
 
+app.get('/casas/ultima-actualizacion', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('casas')
+      .select('updated_at')
+      .order('updated_at', { ascending: false })
+      .limit(1)
+      .single()
+
+    if (error) throw error
+
+    res.json({ ultimaActualizacion: data?.updated_at })
+  } catch (e) {
+    console.error('❌ Error al obtener fecha de actualización:', e)
+    res.status(500).json({ error: 'Error al obtener la fecha de actualización' })
+  }
+})
+
+
 
 app.listen(PORT, () => {
   console.log(`🚀 API corriendo en http://localhost:${PORT}`)
